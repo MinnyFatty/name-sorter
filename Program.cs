@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,77 +13,71 @@ namespace name_sorter
         static void Main(string[] args)
         {
             #region Inialization of SeedData directory
+
+            //This section initializes the SeedData directory and sets the default file names. Acts as a basic unit test to ensure the program can run with default data.
+
             var currentDir = Directory.GetCurrentDirectory();
             currentDir = currentDir.Replace("\\bin\\Debug", ""); // Adjust the path to the project root directory
-            var fileName = "names.txt"; // Default file name;
-            var pathToFile = $"{currentDir}\\SeedData\\"; //Default path to the file
+            var fileName = "";
+            var pathToFile = $"{currentDir}"; //Default path to the file
             var sortedNamesFile = "sorted_names-list.txt"; // Default sorted names file name
             var outputFileName = $"{currentDir}\\SeedData\\{sortedNamesFile}"; //Default output file name
             #endregion
 
             #region Fetch the file name from arguments if provided
-            if (args.Length == 0)
+            if (args.Length > 0)
             {
-                // Use the default file if no arguments are provided
-                Console.WriteLine("Using default test file or seed data to initiate execution, if you want to use your own file, please provide location in arguments when executing exe file.");
 
-                //generate SeedData directory if it does not exist
-                if (!Directory.Exists(pathToFile))
+                if (args.Length == 1)
                 {
-                    Directory.CreateDirectory(pathToFile);
-                    Console.WriteLine($"Created directory: {pathToFile}");
+                    // If one argument is provided, assume it's the file path
+                    var fileNameProvided = args[0];
+                    fileName = fileNameProvided.Split('\\').Last();
+                    pathToFile = fileNameProvided.Substring(0, fileNameProvided.Length - fileName.Length).Trim();
+                    outputFileName = $"{pathToFile}{sortedNamesFile}";
+                    Console.WriteLine($"Using provided file: {fileName} to initiate execution.");
                 }
-                else 
-                { 
-                    Console.WriteLine($"Using existing directory: {pathToFile}");
+                else
+                {
+                    // Assuming the first argument is the file path
+                    var fileNameProvided = args[0];
+                    fileName = fileNameProvided.Split('\\').Last();
+                    pathToFile = fileNameProvided.Substring(0, fileNameProvided.Length - fileName.Length).Trim();
+                    outputFileName = $"{pathToFile}{sortedNamesFile}";
+                    Console.WriteLine($"Using provided file: {fileName} to initiate execution, all other arguments will be ignored.");
                 }
-            }
-            else if (args.Length == 1)
-            {
-                // If one argument is provided, assume it's the file path
-                var fileNameProvided = args[0];
-                fileName = fileName.Split('/').Last();
-                pathToFile = fileNameProvided.Substring(0, fileNameProvided.Length - fileName.Length).Trim();
-                outputFileName = $"{pathToFile}{sortedNamesFile}";
-                Console.WriteLine($"Using provided file: {fileName} to initiate execution.");
+
+                #endregion
+
+                #region Main Logic
+                string readContents;
+                readContents = ReadFile($"{pathToFile}{fileName}");
+
+                //clean up the lines to remove any leading or trailing whitespace or double spaces which could cause issues in sorting
+                string readContentsCleaned = readContents.Replace("  ", "");
+
+                Console.WriteLine("\nSorting names...");
+
+                List<Person> personList = new List<Person>();
+                AddToList(readContentsCleaned, personList);
+
+                List<Person> personListSorted = new List<Person>();
+                personListSorted = SortBySurnameThenName(personList);
+                #endregion
+
+                #region Outputs
+
+                PrintSortedList(personListSorted);
+
+                WriteToFile(outputFileName, personListSorted);
+
+                #endregion
+
             }
             else
             {
-                // Assuming the first argument is the file path
-                var fileNameProvided = args[0];
-                fileName = fileName.Split('/').Last();
-                pathToFile = fileNameProvided.Substring(0, fileNameProvided.Length - fileName.Length).Trim();
-                outputFileName = $"{pathToFile}{sortedNamesFile}";
-                Console.WriteLine($"Using provided file: {fileName} to initiate execution, all other arguments will be ignored.");
+                Console.WriteLine("No file provided for sorting. Please add a file as an argument when executing the application.");
             }
-
-            #endregion
-
-            #region Main Logic
-            string readContents;
-            readContents = ReadFile($"{pathToFile}{fileName}");
-
-            //clean up the lines to remove any leading or trailing whitespace or double spaces which could cause issues in sorting
-            string readContentsCleaned = readContents.Replace("  ", "");
-
-            Console.WriteLine("\nSorting names...");
-
-            List<Person> personList = new List<Person>();
-            AddToList(readContentsCleaned, personList);
-
-            List<Person> personListSorted = new List<Person>();
-            personListSorted = SortBySurnameThenName(personList);
-            #endregion
-
-            #region Outputs
-
-            PrintSortedList(personListSorted);
-
-            WriteToFile(outputFileName, personListSorted);
-
-            #endregion
-
-
         }
         /// <summary>
         /// Reads the contents of a file and returns it as a string.
@@ -182,12 +177,20 @@ namespace name_sorter
         private static void WriteToFile(string outputFileName, List<Person> personListSorted)
         {
             //Write the sorted names to a file
-            using (StreamWriter streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
+            try
             {
-                foreach (var person in personListSorted)
+                using (StreamWriter streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
                 {
-                    streamWriter.WriteLine($"{person.Names} {person.Surname}");
+                    foreach (var person in personListSorted)
+                    {
+                        streamWriter.WriteLine($"{person.Names} {person.Surname}");
+                    }
                 }
+                Console.WriteLine($"\nSorted names written to file: {outputFileName}");
+            }
+            catch(Exception writeToFileErr)
+            {
+                Console.WriteLine($"Error when writing to file: \n{writeToFileErr}");
             }
         }
     }
