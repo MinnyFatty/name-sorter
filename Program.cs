@@ -58,6 +58,7 @@ namespace name_sorter
 
             #endregion
 
+            #region Main Logic
             string readContents;
             readContents = ReadFile($"{pathToFile}{fileName}");
 
@@ -71,13 +72,18 @@ namespace name_sorter
 
             List<Person> personListSorted = new List<Person>();
             personListSorted = SortBySurnameThenName(personList);
+            #endregion
+
+            #region Outputs
 
             PrintSortedList(personListSorted);
 
             WriteToFile(outputFileName, personListSorted);
 
-        }
+            #endregion
 
+
+        }
         /// <summary>
         /// Reads the contents of a file and returns it as a string.
         /// </summary>
