@@ -2,6 +2,7 @@
 using name_sorter;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace UnitTestNameSorter
 {
@@ -16,6 +17,7 @@ namespace UnitTestNameSorter
             currentDir = currentDir.Replace("\\bin\\Debug", ""); // Adjust the path to the project root directory
             var fileName = "names.txt"; // Default file name;
             var pathToFile = $"{currentDir}\\SeedData\\"; // Default path to the file
+
             // Act
             var filePath = $"{pathToFile}{fileName}";
             // Assert

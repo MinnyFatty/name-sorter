@@ -17,6 +17,8 @@ namespace UnitTestNameSorter
             var fileName = "names.txt"; // Default file name;
             var pathToFile = $"{currentDir}\\SeedData\\"; // Default path to the file
             var outputFileName = $"{pathToFile}sorted_names-list.txt"; // Default output file name
+
+
             // Act
             var names = File.ReadAllLines($"{pathToFile}{fileName}");
             // Assert
