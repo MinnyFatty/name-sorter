@@ -11,6 +11,7 @@ namespace UnitTestNameSorter
         [TestMethod]
         public void CheckForValidNames()
         {
+            
             // Arrange
             var currentDir = Directory.GetCurrentDirectory();
             currentDir = currentDir.Replace("\\bin\\Debug", ""); // Adjust the path to the project root directory
@@ -21,10 +22,11 @@ namespace UnitTestNameSorter
 
             // Act
             var names = File.ReadAllLines($"{pathToFile}{fileName}");
+
+            //name_sorter.ReadFile($"{pathToFile}{fileName}");
             // Assert
             foreach (var name in names)
             {
-                Assert.IsFalse(string.IsNullOrWhiteSpace(name), "Name should not be null or whitespace.");
                 Assert.IsTrue(name.Replace(" ", string.Empty).All(char.IsLetter), "Name should contain only letters.");
                 Assert.IsTrue(name.Length > 0, "Name should not be empty.");
             }

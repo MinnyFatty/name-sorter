@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace name_sorter
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -84,7 +84,7 @@ namespace name_sorter
         /// </summary>
         /// <param name="file">This is the file path and file name that will be saved as a string.</param>
         /// <returns>String with contents of file.</returns>  
-        private static string ReadFile(string file)
+        public static string ReadFile(string file)
         {
             var result = string.Empty;
 

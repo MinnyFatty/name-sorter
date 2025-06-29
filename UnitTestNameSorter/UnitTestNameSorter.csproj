@@ -49,11 +49,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="name_sorter\NameSorter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTestTxtExtension.cs" />
     <Compile Include="UnitTest2Names.cs" />
     <Compile Include="UnitTestValidNames.cs" />
-    <Compile Include="UnitTestEmpty.cs" />
+    <Compile Include="UnitTestEmptyFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
